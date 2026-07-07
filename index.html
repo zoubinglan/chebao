@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CHEBAO Automotive Products - Homepage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
+    <style>
+        /* ================= 基础变量与重置 ================= */
+        :root {
+            --primary-orange: #FF5A00;
+            --orange-gradient: linear-gradient(135deg, #FF7B00 0%, #FF3D00 100%);
+            --dark-bg: #1F2229;
+            --text-gray: #6B7280;
+        }
+
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--dark-bg); overflow-x: hidden; }
+
+        /* ================= 首屏总体容器 ================= */
+        #hero-section {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .hero-top {
+            flex: 1;
+            position: relative;
+            display: flex;
+            background: url('./微信图片_20260704173007_508_21.png') right center/cover no-repeat;
+            min-height: 0;
+        }
+
+        .mobile-hero-img { display: none; }
+
+        .hero-angle-orange {
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 48%;
+            background: var(--primary-orange);
+            clip-path: polygon(0 0, 100% 0, 65% 100%, 0 100%);
+            z-index: 1;
+        }
+
+        .hero-angle-white {
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 47%;
+            background: #ffffff;
+            clip-path: polygon(0 0, 100% 0, 65% 100%, 0 100%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem 5% 2rem 8%;
+        }
+
+        .hero-subtitle-top { font-size: clamp(1.1rem, 2vh, 1.5rem); font-weight: 700; color: #333; margin-bottom: 0.2rem; }
+        .hero-title { font-size: clamp(2.5rem, 6vh, 4.5rem); font-weight: 900; color: var(--primary-orange); line-height: 1; letter-spacing: -1px; }
+        .hero-title-sub { font-size: clamp(1rem, 2.2vh, 1.4rem); font-weight: 700; color: #333; margin-top: 0.3rem; margin-bottom: clamp(1rem, 3vh, 2rem); }
+        .divider { width: 40px; height: 3px; background: var(--primary-orange); margin-bottom: clamp(1rem, 2.5vh, 1.5rem); }
+        .hero-desc { font-size: clamp(0.95rem, 2vh, 1.1rem); color: #333; font-weight: 500; margin-bottom: 0.2rem; }
+        .hero-since { font-size: clamp(0.95rem, 2vh, 1.1rem); color: var(--primary-orange); font-weight: 700; margin-bottom: clamp(1rem, 3vh, 2rem); }
+        .hero-text-small { font-size: 0.85rem; color: var(--text-gray); line-height: 1.5; max-width: 350px; }
+
+        .hero-bottom {
+            background: var(--dark-bg);
+            padding: 1.5rem 8% 1.5rem;
+            z-index: 3;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .nav-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; margin-top: -6rem; }
+        .nav-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 1.5rem; position: relative; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px); }
+        .nav-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.3); }
+        .nav-card.active { background: var(--orange-gradient); border: 1px solid transparent; box-shadow: 0 15px 30px rgba(255, 90, 0, 0.3); transform: scale(1.05); }
+        .nav-card.active:hover { transform: scale(1.05) translateY(-5px); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; color: rgba(255,255,255,0.2); }
+        .card-header .icon { font-size: 1.5rem; color: rgba(255,255,255,0.7); }
+        .nav-card.active .card-header { color: rgba(255,255,255,0.8); }
+        .nav-card.active .card-header .icon { color: #fff; }
+        .card-num { font-size: 2rem; font-weight: 900; }
+        .card-title { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; line-height: 1.3;}
+        .card-subtitle { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+        .nav-card.active .card-subtitle { color: rgba(255,255,255,0.9); }
+
+        .hero-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); font-size: 0.75rem; letter-spacing: 1px; }
+        .hero-footer span { margin-right: 15px; }
+        .hero-footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+
+        /* ================= 版块二：公司简介 ================= */
+        #section-history { background-color: #15181E; padding: 8rem 5% 5rem; color: #fff; position: relative; }
+        .about-header { text-align: center; max-width: 900px; margin: 0 auto 5rem; }
+        .about-header h2 { font-size: 3rem; font-weight: 900; margin-bottom: 1rem; letter-spacing: 1px; }
+        .about-header h2 span { color: var(--primary-orange); }
+        .about-desc { font-size: 1rem; color: var(--text-gray); line-height: 1.8; text-align: justify; text-align-last: center; }
+
+        .timeline-container { position: relative; max-width: 1000px; margin: 0 auto; }
+        .timeline-container::before { content: ''; position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: rgba(255, 255, 255, 0.05); transform: translateX(-50%); }
+        .timeline-item { display: flex; justify-content: flex-end; align-items: center; width: 100%; margin-bottom: 4rem; position: relative; opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .timeline-item.show { opacity: 1; transform: translateY(0); }
+        .timeline-item:nth-child(odd) { justify-content: flex-start; }
+        .timeline-dot { position: absolute; left: 50%; transform: translate(-50%, 0); width: 20px; height: 20px; background: var(--dark-bg); border: 4px solid var(--primary-orange); border-radius: 50%; z-index: 2; box-shadow: 0 0 15px rgba(255, 90, 0, 0.6); transition: all 0.3s; }
+        .timeline-item:hover .timeline-dot { background: var(--primary-orange); box-shadow: 0 0 25px rgba(255, 90, 0, 1); transform: translate(-50%, -3px) scale(1.2); }
+        .timeline-content { width: 45%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 2rem; position: relative; backdrop-filter: blur(10px); transition: transform 0.3s, border-color 0.3s; overflow: hidden; }
+        .timeline-item:hover .timeline-content { transform: translateY(-5px); border-color: rgba(255, 90, 0, 0.5); }
+        .watermark-year { position: absolute; top: -10px; right: 10px; font-size: 5rem; font-weight: 900; color: rgba(255, 255, 255, 0.04); z-index: 0; pointer-events: none; }
+        .timeline-item:nth-child(even) .watermark-year { right: auto; left: 10px; }
+        .timeline-content h3 { font-size: 1.8rem; color: var(--primary-orange); margin-bottom: 0.5rem; position: relative; z-index: 1; }
+        .timeline-content p { font-size: 0.95rem; color: #d1d5db; line-height: 1.6; position: relative; z-index: 1; margin-bottom: 0.5rem; }
+        .icon-badge { display: inline-block; background: rgba(255, 90, 0, 0.1); color: var(--primary-orange); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 1rem; }
+
+        /* ================= 版块三：领导团队 ================= */
+        #section-leadership { background-color: #F8F9FA; padding: 8rem 5% 5rem; color: #333; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-header h4 { color: var(--primary-orange); font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .section-header h2 { font-size: 3rem; font-weight: 900; color: #1F2229; margin-bottom: 1rem; }
+        .section-header h2 span { color: var(--primary-orange); }
+        .section-header p { color: var(--text-gray); font-size: 1rem; max-width: 700px; margin: 0 auto; }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; max-width: 1200px; margin: 0 auto; }
+        .flip-card { background-color: transparent; height: 480px; perspective: 1000px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-radius: 12px; }
+        .flip-card.is-flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+        .flip-card-front { background-color: #fff; }
+        .team-photo { height: 60%; background-color: #D1D5DB; background-size: cover; background-position: center 20%; position: relative; padding-bottom: 20px; }
+        .team-icon-circle { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: var(--primary-orange); border-radius: 50%; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 5; }
+        .team-info-front { padding: 2.5rem 1.5rem 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .team-role { color: var(--primary-orange); font-size: 0.9rem; font-weight: 700; margin-bottom: 0.2rem;}
+        .team-name { font-size: 1.5rem; font-weight: 800; color: #1F2229; }
+        .click-hint { background: var(--primary-orange); color: #fff; padding: 12px; font-size: 0.85rem; font-weight: 700; margin: -1.5rem -1.5rem 0; transition: background 0.3s; }
+        .flip-card:hover .click-hint { background: #E65000; }
+        .flip-card-back { background-color: var(--dark-bg); color: #fff; transform: rotateY(180deg); padding: 3rem 2rem; text-align: left; }
+        .flip-card-back h3 { color: var(--primary-orange); font-size: 1.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid rgba(255,90,0,0.3); padding-bottom: 0.5rem; }
+        .back-list { list-style: none; }
+        .back-list li { margin-bottom: 1.2rem; font-size: 0.95rem; line-height: 1.5; color: #D1D5DB; position: relative; padding-left: 25px; }
+        .back-list li::before { content: '🏆'; position: absolute; left: 0; top: 0; font-size: 0.9rem; }
+
+        .values-bar { background: #fff; max-width: 1200px; margin: 4rem auto 0; padding: 1.5rem 2rem; border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .values-title { font-weight: 900; font-size: 1.2rem; color: #1F2229; }
+        .values-title span { color: var(--primary-orange); display: block; font-size: 1.4rem;}
+        .value-item { display: flex; flex-direction: column; align-items: center; }
+        .value-item span:first-child { color: var(--primary-orange); font-size: 1.5rem; margin-bottom: 0.3rem;}
+        .value-item span:last-child { font-size: 0.75rem; font-weight: 700; color: var(--text-gray); text-transform: uppercase;}
+
+        /* ================= 版块四：生产线与实验室 ================= */
+        #section-capability { background-color: #fff; padding: 8rem 5% 15rem; color: #333; }
+        .production-lines { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 6rem; }
+        
+        /* 🌟 生产线改造为真实 <img> 包裹模式 */
+        .line-card { position: relative; border-radius: 12px; overflow: hidden; background-color: var(--dark-bg); display: flex; }
+        .line-bg-img { width: 100%; height: auto; display: block; }
+        .line-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(31,34,41,0.9) 0%, rgba(31,34,41,0.2) 100%); transition: background 0.4s; }
+        .line-card:hover::before { background: linear-gradient(to top, rgba(255,90,0,0.9) 0%, rgba(255,90,0,0.2) 100%); }
+        .line-info { position: absolute; bottom: 2rem; left: 2rem; color: #fff; z-index: 2; }
+        .line-info h3 { font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .line-info p { font-size: 1rem; color: #E5E7EB; max-width: 80%; line-height: 1.5; }
+
+        .lab-equipment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: start; overflow-anchor: none; }
+        .equip-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; overflow: hidden; cursor: pointer; transition: box-shadow 0.3s, transform 0.3s; }
+        .equip-card:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.08); transform: translateY(-5px); }
+        .equip-top { padding: 1.5rem; text-align: center; }
+        
+        /* 🌟 实验室设备图包裹模式 */
+        .equip-photo { width: 100%; border-radius: 8px; margin-bottom: 1.5rem; overflow: hidden; background: #fff;}
+        .equip-photo img { width: 100%; height: auto; display: block; }
+        
+        .equip-title { font-size: 1.2rem; font-weight: 800; color: #1F2229; margin-bottom: 0.5rem; }
+        .equip-desc { font-size: 0.9rem; color: var(--text-gray); line-height: 1.5; }
+        .click-to-view { display: inline-block; margin-top: 1rem; font-size: 0.85rem; color: var(--primary-orange); font-weight: 700; }
+        .click-to-view::after { content: ' ↓'; transition: transform 0.3s; display: inline-block; }
+        .equip-card.is-open .click-to-view::after { transform: rotate(180deg); }
+        
+        .cert-panel { max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1); background-color: #1F2229; color: #fff; }
+        .cert-content { padding: 2rem; text-align: center; }
+        
+        /* 🌟 实验室内部证书包裹模式 */
+        .cert-img { width: 100%; border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 5px; display: flex; align-items: center; justify-content: center; }
+        .cert-img img { width: 100%; height: auto; display: block; border-radius: 4px; }
+
+        /* ================= 版块五：数字化数据管理系统 (DQM) ================= */
+        #section-dqm { background-color: #0B0F19; padding: 8rem 5% 8rem; color: #fff; position: relative; overflow: hidden; }
+        .dqm-header { text-align: center; margin-bottom: 6rem; }
+        .dqm-header h4 { color: var(--primary-orange); font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .dqm-header h2 { font-size: 3rem; font-weight: 900; margin-bottom: 1rem; }
+        .dqm-header h2 span { color: var(--primary-orange); }
+        .dqm-row { display: flex; align-items: center; justify-content: space-between; max-width: 1300px; margin: 0 auto 6rem; gap: 4rem; opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dqm-row:nth-child(even) { flex-direction: row-reverse; }
+        .dqm-row.show { opacity: 1; transform: translateY(0); }
+        .dqm-text { flex: 0 0 45%; }
+        .dqm-text h3 { font-size: 2rem; color: #fff; margin-bottom: 1rem; line-height: 1.3; }
+        .dqm-text p { font-size: 1.05rem; color: #9CA3AF; line-height: 1.7; margin-bottom: 1.5rem; }
+        .dqm-text ul { list-style: none; color: #D1D5DB; }
+        .dqm-text ul li { margin-bottom: 0.8rem; position: relative; padding-left: 1.8rem; font-size: 0.95rem; }
+        .dqm-text ul li::before { content: '✓'; color: var(--primary-orange); position: absolute; left: 0; font-weight: 900; font-size: 1.1rem; }
+        
+        .dqm-visual { flex: 0 0 50%; position: relative; background-color: #1F2229; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); transition: transform 0.4s, box-shadow 0.4s; display: flex; overflow: hidden; }
+        .dqm-visual img { width: 100%; height: auto; display: block; }
+        .dqm-visual:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(255, 90, 0, 0.2); }
+        .dqm-visual::after { content: ''; position: absolute; top: 50%; left: 50%; width: 70%; height: 70%; background: var(--primary-orange); filter: blur(100px); opacity: 0.15; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
+
+        /* ================= 版块六：资质与荣誉 ================= */
+        #section-qualifications { background-color: #F3F4F6; padding: 8rem 5% 8rem; color: #1F2229; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .qual-intro { max-width: 800px; margin: 0 auto 3rem; }
+        .qual-intro h4 { color: var(--primary-orange); font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; }
+        .qual-intro h2 { font-size: 3rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.2; }
+        .qual-intro p { font-size: 1.1rem; color: var(--text-gray); line-height: 1.8; margin-bottom: 1rem; }
+        .btn-reveal { background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange); padding: 1rem 2.5rem; font-size: 1rem; font-weight: 700; letter-spacing: 1px; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 2rem; }
+        .btn-reveal:hover { background: var(--primary-orange); color: #fff; box-shadow: 0 10px 20px rgba(255, 90, 0, 0.2); transform: translateY(-3px); }
+        .btn-reveal svg { transition: transform 0.3s; }
+        .btn-reveal.is-active svg { transform: rotate(180deg); }
+
+        .certs-gallery-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; width: 100%; max-width: 1200px; max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease; }
+        .certs-gallery-4.is-expanded { max-height: 2500px; opacity: 1; padding-top: 2rem; }
+        .cert-card-item { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.04); text-align: center; transform: translateY(40px); opacity: 0; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .certs-gallery-4.is-expanded .cert-card-item { transform: translateY(0); opacity: 1; transition-delay: var(--delay); }
+        .cert-card-item:hover { transform: translateY(-10px) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border-color: rgba(255, 90, 0, 0.3); }
+
+        /* 🌟 资质证书包裹模式 */
+        .cert-img-wrap { width: 100%; margin-bottom: 1.5rem; border-radius: 4px; overflow: hidden; }
+        .cert-img-wrap img { width: 100%; height: auto; display: block; }
+        
+        .cert-card-item h3 { font-size: 1.1rem; font-weight: 800; color: #1F2229; margin-bottom: 0.3rem;}
+        .cert-card-item p { font-size: 0.85rem; color: var(--text-gray); font-weight: 500;}
+
+        /* ================= 版块七：Pro级 3D 互动产品手册 ================= */
+        #section-products { background-color: #050505; background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 80%); padding: 6rem 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+        .products-header { text-align: center; margin-bottom: 3rem; color: #fff; z-index: 10; }
+        .products-header h4 { color: #FF5A00; font-size: 1rem; letter-spacing: 3px; margin-bottom: 0.5rem; }
+        .products-header h2 { font-size: 3.5rem; font-weight: 900; }
+        .perspective-scene { perspective: 2500px; width: 100%; display: flex; justify-content: center; align-items: center; flex: 1; }
+        #book-wrapper { position: relative; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1); filter: drop-shadow(0 30px 40px rgba(0,0,0,0.6)); }
+        .state-lying { transform: rotateX(45deg) rotateZ(-12deg) translateY(120px) scale(0.7); }
+        .state-standing { transform: rotateX(0deg) rotateZ(0deg) translateY(0) scale(1); }
+        #click-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 50; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: opacity 0.4s; }
+        .pulse-btn { background: #FF5A00; color: #fff; padding: 15px 40px; border-radius: 50px; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; box-shadow: 0 0 30px rgba(255, 90, 0, 0.6); animation: pulse-glow 2s infinite; }
+        @keyframes pulse-glow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 90, 0, 1); } }
+        
+        .book-page { background-color: #FAFAFA; color: #333; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); }
+        .page-cover { background: linear-gradient(135deg, #FF6B00 0%, #CC3A00 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-right: 6px solid #8B2500; }
+        .page-cover.back { border-right: none; border-left: 6px solid #8B2500; }
+        .cover-title { font-size: 3.5rem; font-weight: 900; color: #fff; margin-bottom: 1rem; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .cover-sub { color: #fff; font-size: 1.2rem; letter-spacing: 4px; opacity: 0.9; }
+        .page-left { padding: 3rem; display: flex; align-items: center; justify-content: center; background-image: linear-gradient(to right, #FAFAFA 85%, #EFEFEF 100%); }
+        
+        /* 🌟 3D书本消除留白：通过使用 cover 强行铺满整页 */
+        .prod-img { width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); }
+        
+        .page-right { padding: 4rem 3.5rem; display: flex; flex-direction: column; justify-content: center; background-image: linear-gradient(to left, #FAFAFA 90%, #EFEFEF 100%); }
+        .brand-badge { background: #FF5A00; color: #fff; padding: 5px 15px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; width: max-content; margin-bottom: 1.5rem; }
+        .prod-title { font-size: 2.2rem; font-weight: 900; color: #111; margin-bottom: 1rem; line-height: 1.2; }
+        .prod-desc { font-size: 1rem; color: #666; line-height: 1.6; margin-bottom: 2rem; }
+        .specs-row { display: flex; justify-content: space-between; border-bottom: 1px solid #EEE; padding: 12px 0; font-size: 0.95rem; }
+        .specs-row span:first-child { color: #888; font-weight: 600; }
+        .specs-row span:last-child { color: #111; font-weight: bold; }
+
+        /* ==================================================== */
+        /* 🌟 手机端自适应补丁：清理多余的高度与比例束缚       */
+        /* ==================================================== */
+        @media screen and (max-width: 768px) {
+            body, html { overflow-x: hidden; width: 100%; }
+
+            /* 1. 首页首屏 */
+            #hero-section { height: auto !important; min-height: auto !important; overflow: visible !important; }
+            .hero-top { height: auto !important; min-height: auto !important; flex: none !important; display: flex !important; flex-direction: column !important; background: none !important; }
+            .mobile-hero-img { display: block !important; width: 100% !important; height: auto !important; object-fit: cover !important; }
+            .hero-angle-orange { display: none !important; }
+            .hero-angle-white { position: relative !important; width: 100% !important; clip-path: none !important; padding: 2rem 1.5rem !important; background: #ffffff !important; height: auto !important; }
+            .hero-title { font-size: 2.5rem !important; }
+            .hero-title-sub { margin-bottom: 1.5rem !important; }
+
+            /* 2. 导航与时间线 */
+            .nav-cards { grid-template-columns: 1fr !important; margin-top: 0 !important; padding: 1.5rem 1.5rem 0 !important; gap: 1rem !important; }
+            .timeline-container::before { left: 20px !important; }
+            .timeline-item { justify-content: flex-start !important; padding-left: 50px; }
+            .timeline-content { width: 100% !important; }
+            .timeline-dot { left: 20px !important; }
+
+            /* 3. 生产线 */
+            .production-lines { grid-template-columns: 1fr !important; }
+
+            /* 4. DQM 模块：解除高度束缚 */
+            .dqm-row, .dqm-row:nth-child(even) { flex-direction: column !important; gap: 1.5rem !important; padding: 0 1.5rem !important; }
+            .dqm-text { width: 100% !important; flex: none !important; }
+            .dqm-visual { width: 100% !important; flex: none !important; height: auto !important; margin-bottom: 2rem; aspect-ratio: auto !important; }
+
+            /* 5. 资质证书：保持手机端一排两张，让高度顺其自然 */
+            .certs-gallery-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; padding: 10px 12px !important; }
+            .cert-card-item { padding: 1rem !important; border-radius: 10px !important; }
+            .cert-img-wrap { aspect-ratio: auto !important; height: auto !important; margin-bottom: 0.8rem !important; }
+            .cert-card-item h3 { font-size: 0.9rem !important; line-height: 1.3 !important; }
+            .cert-card-item p { font-size: 0.75rem !important; }
+
+            /* 6. 3D 画册缩放 */
+            .perspective-scene { transform: scale(0.48); transform-origin: center center; min-height: 400px !important; }
+            #book-wrapper { transform: none !important; }
+            #section-products { min-height: 480px !important; padding: 1.5rem 0 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <section id="hero-section">
+        <div class="hero-top">
+            <img class="mobile-hero-img" src="./微信图片_20260704173007_508_21.png" alt="CHEBAO">
+            <div class="hero-angle-orange"></div>
+            <div class="hero-angle-white">
+                <div class="hero-subtitle-top">Quanzhou</div>
+                <h1 class="hero-title">CHEBAO</h1>
+                <div class="hero-title-sub">Automotive Products Co., Ltd.</div>
+                <div class="divider"></div>
+                <div class="hero-desc">Professional Brake Fluid Manufacturer</div>
+                <div class="hero-since">Since 2012</div>
+                <p class="hero-text-small">
+                    Specialized in R&D, production and sales of high-quality brake fluids.<br>
+                    Committed to safety, quality and innovation, serving customers worldwide.
+                </p>
+            </div>
+        </div>
+        <div class="hero-bottom">
+            <div class="nav-cards">
+                <div class="nav-card" id="nav-01">
+                    <div class="card-header"><span class="icon">🏢</span><span class="card-num">01</span></div>
+                    <div class="card-title">Company<br>Overview</div>
+                    <div class="card-subtitle">Corporate Background</div>
+                </div>
+                <div class="nav-card" id="nav-02">
+                    <div class="card-header"><span class="icon">👥</span><span class="card-num">02</span></div>
+                    <div class="card-title">Leadership<br>& Vision</div>
+                    <div class="card-subtitle">Management & Strategy</div>
+                </div>
+                <div class="nav-card active" id="nav-03">
+                    <div class="card-header"><span class="icon">🏭</span><span class="card-num">03</span></div>
+                    <div class="card-title">Manufacturing<br>& Laboratory</div>
+                    <div class="card-subtitle">Production & Testing</div>
+                </div>
+                <div class="nav-card" id="nav-04">
+                    <div class="card-header"><span class="icon">🛡️</span><span class="card-num">04</span></div>
+                    <div class="card-title">Quality<br>System</div>
+                    <div class="card-subtitle">Inspection & Data</div>
+                </div>
+                <div class="nav-card" id="nav-05">
+                    <div class="card-header"><span class="icon">🌐</span><span class="card-num">05</span></div>
+                    <div class="card-title">Products<br>& Market</div>
+                    <div class="card-subtitle">OEM & Brand</div>
+                </div>
+            </div>
+            <div class="hero-footer">
+                <div><span style="color:var(--primary-orange)">✓</span> QUALITY &nbsp;·&nbsp; INNOVATION &nbsp;·&nbsp; RELIABILITY</div>
+                <div><a href="#">www.chebaobrake.com 🌐</a></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section-history">
+        <div class="about-header">
+            <h2>ABOUT <span>CHEBAO</span></h2>
+            <p class="about-desc">
+                Quanzhou Chebao Automotive Products Co., Ltd. is located in Quanzhou, the cultural capital of East Asia, the starting point of the Maritime Silk Road, and the economic center of Fujian Province. Founded in 2000, Chebao has grown into a comprehensive enterprise specializing in the R&D and manufacturing of brake fluids, integrating product development, production, sales and service.<br><br>
+                Currently, Chebao consists of three subsidiaries. We specialize in the R&D, production and sales of mid-to-high-end brake fluids. We own multiple brands including "Changan Chebao", "Jingchi" and "Junke", and provide OEM brake fluid services for hundreds of domestic brands.
+            </p>
+        </div>
+        <div class="timeline-container">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2000</div>
+                    <span class="icon-badge">AUGUST</span>
+                    <h3>2000</h3>
+                    <p>Chebao was established in Dongbian Village, Luojiang District, Quanzhou.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2002</div>
+                    <span class="icon-badge">RELOCATION</span>
+                    <h3>2002</h3>
+                    <p>The company moved to Dongbian Village, Luohuang Town, Quanzhou.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2003</div>
+                    <span class="icon-badge">LICENSE</span>
+                    <h3>2003</h3>
+                    <p>The company obtained the production license for brake fluids and successfully launched DOT-3 and DOT-4, officially entering the market.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2011</div>
+                    <span class="icon-badge">EXPANSION</span>
+                    <h3>2011</h3>
+                    <p>The company moved to No.5, Zijing South 5th Road, Luojiang District, Quanzhou.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year" style="font-size: 3rem;">2012-2015</div>
+                    <span class="icon-badge">R & D</span>
+                    <h3>2012-2015</h3>
+                    <p>After continuous R&D, we developed DOT-4+ series products.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2013</div>
+                    <span class="icon-badge">CONSULTATION</span>
+                    <h3>2013</h3>
+                    <p>Invited by South China University of Technology Institute of Mechanical Engineering for brake fluid technology consultation.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2016</div>
+                    <span class="icon-badge">INNOVATION</span>
+                    <h3>2016</h3>
+                    <p>Developed DOT-5.1 synthetic brake fluid and successfully launched it to the market.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2019</div>
+                    <span class="icon-badge">HONOR</span>
+                    <h3>2019</h3>
+                    <p>Awarded as Director Unit of Auto Parts Chamber of Commerce in Quanzhou.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2020</div>
+                    <span class="icon-badge">ASSOCIATION</span>
+                    <h3>2020</h3>
+                    <p>• Awarded as Director Unit of Fujian Lubricating Oil Industry Association.</p>
+                    <p>• Awarded as Member Unit of Guangdong Lubricating Oil Industry Association.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2020</div>
+                    <span class="icon-badge">ISO 9001</span>
+                    <h3>2020</h3>
+                    <p>In November, obtained GB/T19001 Quality Management System Certification.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="watermark-year">2021</div>
+                    <span class="icon-badge">IATF 16949</span>
+                    <h3>2021</h3>
+                    <p>In November, obtained IATF 16949 Quality Management System Certification.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section-leadership">
+        <div class="section-header">
+            <h4>Leadership Team</h4>
+            <h2>PEOPLE BEHIND <span>CHEBAO</span></h2>
+            <p>Driven by experience, guided by vision. Our leadership team is committed to innovation, quality, and long-term partnership.</p>
+        </div>
+        <div class="team-grid">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="team-photo">
+                            <div class="team-icon-circle">👤</div>
+                        </div>
+                        <div class="team-info-front">
+                            <div>
+                                <div class="team-role">Chairman</div>
+                                <div class="team-name">Mr. Zhang Jianmin</div>
+                            </div>
+                            <div class="click-hint">CLICK TO VIEW PROFILE ></div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3>Mr. Zhang Jianmin</h3>
+                        <ul class="back-list">
+                            <li><strong>25+ years</strong> in the brake fluid industry.</li>
+                            <li>Strategic leadership & enterprise innovation.</li>
+                            <li>Industry association director, guiding regional automotive product standards.</li>
+                            <li>Led the company from its inception in 2000 to a leading national OEM provider.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="team-photo" style="background-image: url('人物1.jpg');">
+                            <div class="team-icon-circle">👤</div>
+                        </div>
+                        <div class="team-info-front">
+                            <div>
+                                <div class="team-role">General Manager</div>
+                                <div class="team-name">Mr. Li Wei</div>
+                            </div>
+                            <div class="click-hint">CLICK TO VIEW PROFILE ></div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3>Mr. Li Wei</h3>
+                        <ul class="back-list">
+                            <li><strong>20+ years</strong> of factory management experience.</li>
+                            <li>Focus on strict quality control and operational excellence.</li>
+                            <li>Spearheaded the implementation of <strong>IATF 16949</strong> and <strong>VDA 6.3</strong> standard audits across the production lines.</li>
+                            <li>Customer-first management philosophy.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="team-photo">
+                            <div class="team-icon-circle">👤</div>
+                        </div>
+                        <div class="team-info-front">
+                            <div>
+                                <div class="team-role">Technical Director</div>
+                                <div class="team-name">Mr. Chen Hong</div>
+                            </div>
+                            <div class="click-hint">CLICK TO VIEW PROFILE ></div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3>Mr. Chen Hong</h3>
+                        <ul class="back-list">
+                            <li><strong>15+ years</strong> in R&D of high-performance brake fluids.</li>
+                            <li>Expert in DOT3, DOT4, and DOT5.1 formula development and chemical analysis.</li>
+                            <li>Oversees the laboratory calibration (including pH meters and viscometers) and raw material testing.</li>
+                            <li>Unwavering commitment to product innovation.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="values-bar">
+            <div class="values-title">OUR <span>VALUES</span></div>
+            <div class="value-item"><span>🎖️</span><span>Dedication</span></div>
+            <div class="value-item"><span>🤝</span><span>Pragmatism</span></div>
+            <div class="value-item"><span>💡</span><span>Innovation</span></div>
+            <div class="value-item"><span>💎</span><span>Quality</span></div>
+            <div class="value-item"><span>🛡️</span><span>Integrity</span></div>
+            <div class="value-item"><span>🌍</span><span>Win-win</span></div>
+        </div>
+    </section>
+
+    <section id="section-capability">
+        <div class="section-header">
+            <h4>Manufacturing Capability</h4>
+            <h2>ADVANCED <span>PRODUCTION</span> LINES</h2>
+            <p>Equipped with advanced automated filling lines and strict process control to ensure stable quality and reliable supply.</p>
+        </div>
+        <div class="production-lines">
+            <div class="line-card">
+                <img class="line-bg-img" src="替换成碱度仪图片.png" alt="LOYIDO Line">
+                <div class="line-info">
+                    <h3>LOYIDO Line</h3>
+                    <p>Advanced automated production line featuring high-precision filling, an automated control system, and highly efficient output.</p>
+                </div>
+            </div>
+            <div class="line-card">
+                <img class="line-bg-img" src="替换成你的汤姆照片.jpg" alt="TOM Line">
+                <div class="line-info">
+                    <h3>TOM Line</h3>
+                    <p>Flexible production line designed for multiple products. Ensures stable output and strict process control for every batch.</p>
+                </div>
+            </div>
+        </div>
+        <div class="section-header" style="margin-top: 2rem;">
+            <h4>Quality Control</h4>
+            <h2>PRECISION <span>LABORATORY</span></h2>
+            <p>Our advanced laboratory instruments ensure accurate testing and full traceability. Click on any equipment to view its calibration certificate.</p>
+        </div>
+        <div class="lab-equipment-grid">
+            <div class="equip-card">
+                <div class="equip-top">
+                    <div class="equip-photo">
+                        <img src="替换成碱度仪图片.png" alt="Reserve Alkalinity Instrument">
+                    </div>
+                    <div class="equip-title">Reserve Alkalinity Instrument</div>
+                    <div class="equip-desc">Precision titration equipment for measuring the reserve alkalinity of brake fluids to ensure optimal anti-corrosion properties.</div>
+                    <div class="click-to-view">View Calibration Cert</div>
+                </div>
+                <div class="cert-panel">
+                    <div class="cert-content">
+                        <div class="cert-img">
+                            <img src="替换成碱度仪图片1.jpg" alt="Certificate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="equip-card">
+                <div class="equip-top">
+                    <div class="equip-photo">
+                        <img src="替换成水分仪图片.jpg" alt="Karl Fischer Moisture Analyzer">
+                    </div>
+                    <div class="equip-title">Karl Fischer Moisture Analyzer</div>
+                    <div class="equip-desc">Micro-moisture analysis to strictly control water content, preventing vapor lock in high-temperature conditions.</div>
+                    <div class="click-to-view">View Calibration Cert</div>
+                </div>
+                <div class="cert-panel">
+                    <div class="cert-content">
+                        <div class="cert-img">
+                            <img src="替换成你的证书图.jpg" alt="Certificate Placeholder">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="equip-card">
+                <div class="equip-top">
+                    <div class="equip-photo">
+                        <img src="替换成粘度仪图片.jpg" alt="Low-Temperature Viscometer">
+                    </div>
+                    <div class="equip-title">Low-Temperature Viscometer</div>
+                    <div class="equip-desc">Professional viscosity testing (-40°C kinematic viscosity) calibrated precisely for DOT 3, 4, and 5.1 evaluation.</div>
+                    <div class="click-to-view">View Calibration Cert</div>
+                </div>
+                <div class="cert-panel">
+                    <div class="cert-content">
+                        <div class="cert-img">
+                            <img src="替换成你的证书图.jpg" alt="Certificate Placeholder">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="equip-card">
+                <div class="equip-top">
+                    <div class="equip-photo">
+                        <img src="替换成烘箱图片.jpg" alt="Binder Oven">
+                    </div>
+                    <div class="equip-title">Binder Oven</div>
+                    <div class="equip-desc">Highly stable thermal conditioning chamber. Temperature verification performed alongside standard GB 28 and GB 46 laboratory thermometer models.</div>
+                    <div class="click-to-view">View Calibration Cert</div>
+                </div>
+                <div class="cert-panel">
+                    <div class="cert-content">
+                        <div class="cert-img">
+                            <img src="替换成烘箱证书图片.jpg" alt="Certificate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="equip-card">
+                <div class="equip-top">
+                    <div class="equip-photo">
+                        <img src="替换成pH计图片.jpg" alt="Precision pH Meter">
+                    </div>
+                    <div class="equip-title">Precision pH Meter</div>
+                    <div class="equip-desc">Calibrated daily to accurately monitor the pH value, protecting automotive rubber and metal components.</div>
+                    <div class="click-to-view">View Calibration Cert</div>
+                </div>
+                <div class="cert-panel">
+                    <div class="cert-content">
+                        <div class="cert-img">
+                            <img src="替换成你的证书图.jpg" alt="Certificate Placeholder">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section-dqm">
+        <div class="dqm-header">
+            <h4>Digital Transformation</h4>
+            <h2>SMART DATA <span>MANAGEMENT</span></h2>
+            <p style="color: #9CA3AF; margin-top:1rem;">Fully integrated digital systems for real-time monitoring, auto-reporting, and strict quality assurance.</p>
+        </div>
+        <div class="dqm-row">
+            <div class="dqm-visual">
+                <img src="dqm_coa.jpg" alt="Data Export">
+            </div>
+            <div class="dqm-text">
+                <h3>Automated Data Export & CoA Generation</h3>
+                <p>Say goodbye to manual data entry errors. Our laboratory system seamlessly integrates with testing instruments to automate workflow processes.</p>
+                <ul>
+                    <li>One-click generation of customized Certificate of Analysis (CoA) reports.</li>
+                    <li>Supports multi-dimensional table management for strict documentation formatting.</li>
+                    <li>Ensures 100% data integrity and traceability for every DOT3, DOT4, and DOT5.1 batch.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="dqm-row">
+            <div class="dqm-visual">
+                <img src="替换成趋势图截图.png" alt="Trend Analysis">
+            </div>
+            <div class="dqm-text">
+                <h3>Real-time Trend Analysis (SPC)</h3>
+                <p>We rely on data, not just final inspections. By continuously monitoring the fluctuation trends of key indicators, we identify potential deviations before they happen.</p>
+                <ul>
+                    <li>Dynamic control charts for Equilibrium Reflux Boiling Point (ERBP) and Kinematic Viscosity.</li>
+                    <li>Visualized dashboard tracking pH value stability across recent production batches.</li>
+                    <li>Statistical Process Control (SPC) integration to maintain perfect process capability (Cpk).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="dqm-row">
+            <div class="dqm-visual">
+                <img src="dqm_alert.jpg" alt="NG Alert">
+            </div>
+            <div class="dqm-text">
+                <h3>Instant NG Alert & Group Push</h3>
+                <p>Quality issues require zero-delay responses. Our digital management system features an automated alert mechanism linked directly to our internal communication groups.</p>
+                <ul>
+                    <li>Automated bot pushes instant alerts to the quality management group chat upon detecting non-conforming (NG) data.</li>
+                    <li>Interactive message cards: Managers click the alert to instantly view specific out-of-spec indicators (e.g., Moisture content high).</li>
+                    <li>Drives an immediate containment and corrective action response, ensuring no defective product leaves the lab.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="section-qualifications">
+        <div class="qual-intro">
+            <h4>Qualifications & Honors</h4>
+            <h2>CERTIFIED EXCELLENCE</h2>
+            <p>Our unwavering commitment to excellence is validated by continuous, rigorous audits from national quality supervision authorities.</p>
+            <p>We ensure that every phase of our manufacturing process meets the highest global automotive supply chain standards.</p>
+        </div>
+        <button id="btn-show-certs" class="btn-reveal">
+            VIEW ALL CERTIFICATES
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div id="certs-gallery" class="certs-gallery-4">
+            <div class="cert-card-item" style="--delay: 0.1s">
+                <div class="cert-img-wrap">
+                    <img src="替换你的IATF图片.jpg" alt="IATF 16949:2016">
+                </div>
+                <h3>IATF 16949:2016</h3>
+                <p>Automotive Quality Management System</p>
+            </div>
+            <div class="cert-card-item" style="--delay: 0.2s">
+                <div class="cert-img-wrap">
+                    <img src="替换你的生产许可图片.jpg" alt="National Production License">
+                </div>
+                <h3>National Production License</h3>
+                <p>Industrial Product Manufacturing</p>
+            </div>
+            <div class="cert-card-item" style="--delay: 0.3s">
+                <div class="cert-img-wrap">
+                    <img src="替换你的ISO图片.jpg" alt="ISO 9001:2015">
+                </div>
+                <h3>ISO 9001:2015</h3>
+                <p>Quality Management System</p>
+            </div>
+            <div class="cert-card-item" style="--delay: 0.4s">
+                <div class="cert-img-wrap">
+                    <img src="替换成碱度仪图片.png"Additional Certification">
+                </div>
+                <h3>Additional Certification</h3>
+                <p>Honor / Compliance Document</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="section-products">
+        <div class="products-header">
+            <h4>Our Premium Series</h4>
+            <h2>PRODUCT <span>CATALOG</span></h2>
+        </div>
+        <div class="perspective-scene">
+            <div id="book-wrapper" class="state-lying">
+                <div id="click-overlay">
+                    <div class="pulse-btn">CLICK TO EXPLORE</div>
+                </div>
+                <div id="my-catalog-book">
+                    <div class="book-page page-cover" data-density="hard">
+                        <div class="cover-title">CHEBAO</div>
+                        <div class="cover-sub">PRODUCT MANUAL</div>
+                    </div>
+                    <div class="book-page page-left" data-density="hard">
+                        <div class="prod-img" style="background-image: url('图1_长安车宝.jpg');"></div>
+                    </div>
+                    <div class="book-page page-right">
+                        <div class="brand-badge">CHANGAN CHEBAO</div>
+                        <h2 class="prod-title">DOT 4 Synthetic</h2>
+                        <p class="prod-desc">Advanced synthetic formula engineered for modern ABS systems. Provides outstanding anti-corrosion protection and prevents vapor lock.</p>
+                        <div class="specs-row"><span>ERBP (Boiling Point)</span><span>≥ 230 °C</span></div>
+                        <div class="specs-row"><span>Kinematic Viscosity</span><span>≤ 1500 mm²/s</span></div>
+                        <div class="specs-row"><span>Net Content</span><span>800g / 1L</span></div>
+                    </div>
+                    <div class="book-page page-left">
+                        <div class="prod-img" style="background-image: url('图2_警驰.jpg');"></div>
+                    </div>
+                    <div class="book-page page-right">
+                        <div class="brand-badge">JINGCHI</div>
+                        <h2 class="prod-title">DOT 5.1 High-Temp</h2>
+                        <p class="prod-desc">Premium fluid tailored for heavy-duty commercial vehicles. Exceptional high-temperature stability ensures instantaneous braking response.</p>
+                        <div class="specs-row"><span>ERBP (Boiling Point)</span><span>≥ 260 °C</span></div>
+                        <div class="specs-row"><span>Kinematic Viscosity</span><span>≤ 900 mm²/s</span></div>
+                        <div class="specs-row"><span>Net Content</span><span>1L / 4L</span></div>
+                    </div>
+                    <div class="book-page page-left">
+                        <div class="prod-img" style="background-image: url('图3_骏客.jpg');"></div>
+                    </div>
+                    <div class="book-page page-right">
+                        <div class="brand-badge">JUNKE</div>
+                        <h2 class="prod-title">DOT 4+ Heavy Duty</h2>
+                        <p class="prod-desc">Specially formulated for continuous downhill braking. Provides enhanced thermal stability and excellent rubber seal compatibility.</p>
+                        <div class="specs-row"><span>ERBP (Boiling Point)</span><span>≥ 245 °C</span></div>
+                        <div class="specs-row"><span>Kinematic Viscosity</span><span>≤ 1300 mm²/s</span></div>
+                        <div class="specs-row"><span>Net Content</span><span>2L / 4L / 200L</span></div>
+                    </div>
+                    <div class="book-page page-left">
+                        <div class="prod-img" style="background-image: url('图4_定制.jpg');"></div>
+                    </div>
+                    <div class="book-page page-right">
+                        <div class="brand-badge">OEM SOLUTIONS</div>
+                        <h2 class="prod-title">Customized Fluid</h2>
+                        <p class="prod-desc">Flexible OEM manufacturing for domestic and global brands. Fully customizable formulations to meet specific climate conditions.</p>
+                        <div class="specs-row"><span>Certifications</span><span>IATF 16949</span></div>
+                        <div class="specs-row"><span>Formula Range</span><span>DOT 3 / 4 / 5.1</span></div>
+                        <div class="specs-row"><span>Packaging</span><span>500g - 1000L IBC</span></div>
+                    </div>
+                    <div class="book-page page-left">
+                        <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; opacity:0.04;">
+                            <h1 style="font-size:4rem; font-weight:900;">CHEBAO</h1>
+                        </div>
+                    </div>
+                    <div class="book-page page-cover back" data-density="hard"></div>
+                    <div class="book-page page-cover back" data-density="hard">
+                        <div style="font-weight:900; font-size:1.5rem; color:#fff;">CHEBAO AUTOMOTIVE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const navCards = document.querySelectorAll('.nav-card');
+        navCards.forEach(card => {
+            card.addEventListener('click', function() {
+                navCards.forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        const card01 = document.getElementById('nav-01');
+        card01.addEventListener('click', () => {
+            document.getElementById('section-history').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.timeline-item').forEach((item) => { observer.observe(item); });
+        document.querySelectorAll('.dqm-row').forEach((row) => { observer.observe(row); });
+
+        const flipCards = document.querySelectorAll('.flip-card');
+        flipCards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('is-flipped');
+            });
+        });
+
+        const equipCards = document.querySelectorAll('.equip-card');
+        equipCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const isOpen = this.classList.contains('is-open');
+                equipCards.forEach(c => {
+                    if(c !== this) {
+                        c.classList.remove('is-open');
+                        c.querySelector('.cert-panel').style.maxHeight = null;
+                    }
+                });
+                if (!isOpen) {
+                    this.classList.add('is-open');
+                    const panel = this.querySelector('.cert-panel');
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                } else {
+                    this.classList.remove('is-open');
+                    const panel = this.querySelector('.cert-panel');
+                    panel.style.maxHeight = null;
+                }
+            });
+        });
+
+        const btnShowCerts = document.getElementById('btn-show-certs');
+        const certsGallery = document.getElementById('certs-gallery');
+        btnShowCerts.addEventListener('click', function() {
+            const isExpanded = certsGallery.classList.toggle('is-expanded');
+            this.classList.toggle('is-active');
+            if (isExpanded) {
+                this.innerHTML = `HIDE CERTIFICATES <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+            } else {
+                this.innerHTML = `VIEW ALL CERTIFICATES <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+            }
+        });
+
+        window.addEventListener('load', function() {
+            const bookContainer = document.getElementById('my-catalog-book');
+            const wrapper = document.getElementById('book-wrapper');
+            const overlay = document.getElementById('click-overlay');
+
+            if (bookContainer && typeof St !== 'undefined') {
+                const pageFlip = new St.PageFlip(bookContainer, {
+                    width: 550, 
+                    height: 750, 
+                    size: "fixed", 
+                    showCover: true,     
+                    usePortrait: false,  
+                    maxShadowOpacity: 0.5
+                });
+
+                const pages = document.querySelectorAll('.book-page');
+                pageFlip.loadFromHTML(pages);
+
+                let isOpened = false;
+                overlay.addEventListener('click', function() {
+                    if (!isOpened) {
+                        isOpened = true;
+                        overlay.style.opacity = '0';
+                        setTimeout(() => overlay.style.display = 'none', 400);
+
+                        wrapper.classList.remove('state-lying');
+                        wrapper.classList.add('state-standing');
+
+                        setTimeout(() => {
+                            pageFlip.flipNext();
+                        }, 1300);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
